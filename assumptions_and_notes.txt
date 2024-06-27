@@ -1,0 +1,43 @@
+assumption 5 - totally rural areas, not cities, towns, etc. e.g. Masaipet, Near Yadgirigutta.
+
+[??obvious??] assumption 2 - Active student count is NOT unique.
+[irrelevant] assumption 1 - cycle is from april 23 to april 24 (Specified in the write up)
+[irrelevant] assumption 2 - Assuming school time from 8AM to 3PM 
+[irrelevant] assumption 3 - zpp means zilla parishad
+[irrelevant] assumption 6 - active students are unique. (Obvious but needs to be stated.)
+
+factos
+- 15 districts
+- uneven number of schools per dist
+- %age based approach not going to work as total students unknown
+- students mainly learning from KA DURING class hours if infra available. (Atleast 30mins/week.)
+- 6th to 8th class.
+
+ASPM -> Active Students per month?
+ALOKPAS -> Average learning on KA per active student?
+
+
+Identify 3-4 trends.
+Hypothesise the the reason for trends.
+Suggestions to improve trends.
+
+
+Graph ideas
+Time spent per student on KA vs time (various assumptions -> depends on state, current availability etc.)
+Schools in each dist -> histogram. (basics) each bar to have cumul. registered students and segmented.
+
+
+Hypothesis 1 - 
+Correlation doesn't mean causation -> More students registered doesn't necessarily mean more learning hours. More ACTIVE students mean more learning hours.
+
+Hypothesis 2 -
+Cursory glance at data shows Time spent on learning trails off toward the end of the year. [Solution - needs more incentive to continue on khan/need more structure in learning program/tie evalutation into KA]
+
+
+
+
+Question - some areas have 100s of registered students but no active users, what is happening to infra in those areas? Are we providing infra or is there existing infra? Include/Exclude?
+Question - 30mins/week/student -> Ideal scenario of time learning on KA/month = 30*registered*4. Check vs ACTIVE LEARNING TIME vs Ideal learning time vs time.
+(Active students*30*4 vs Active learning time also.)
+Question - Registered students vs Active Students/month.
+
