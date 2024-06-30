@@ -2,6 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(stringr)
+library(glue)
 
 # # ---------------- Optional Stuff ----------------
 #cbbPalette <- c("blue", "green", "yellow", "red")
@@ -12,7 +13,7 @@ cbbPalette <- c("#CC0000", "#006600", "#669999", "#00CCCC",
 
 # ---------------- Data Reading/Manipulation ----------------
 
-me1 <- read.csv("D:/Repositories/zpp-analysis-khan-academy/M&E Insight Analyst Assignment - Data set - Copy.csv")
+me1 <- read.csv("D:/Repositories/zpp-analysis-khan-academy/M&E Insight Analyst Assignment - Data set.csv")
 # replace with <path to the data.csv file> when uploading.
 
 reg_stu <- data.frame(me1[,1:15])
@@ -56,10 +57,10 @@ mean_active_students_school$School.Name <- reg_stu$School.Name
 # add school name to the new data frame
 
 total_mean <- reg_stu %>% summarise(total_mean_students = mean(Total.Number.of.Students.Registered))
-# total mean of registered students
+# total mean of registered students (UNUSED)
 
 student_mean_per_dist <- reg_stu %>% group_by(District.Name) %>% summarise(mean = mean(Total.Number.of.Students.Registered)) 
-# mean of registered students per dist.
+# mean of registered students per dist. (UNUSED)
 
 active_students_median <- reg_stu %>% summarize(across(4:15, \(x) median(x, na.rm = TRUE)))
 # Median Active students per month ACROSS ALL SCHOOLS.
@@ -112,10 +113,6 @@ for (val in 1:15) {
   district_level_ALOKPAS[[paste0("dis_ALOKPAS", val)]] <- data.frame(subset(act_hours, District.Name == paste0("District ", val)))
 }
 
-
-
-
-
 # ----------- Plot for Registered Students Per District -----------
 
 reg_stu$District.Name <- factor(reg_stu$District.Name, levels = paste0("District ", 1:15), ordered = TRUE)
@@ -141,11 +138,11 @@ ggplot(data = long_reg_stu, aes(x = Month, y = Active.Students, group = School.N
 
 # ---------- Per school plot ---------
 
-school_name_plot <- reg_stu[reg_stu$School.Name == "ZPP 132",]
+school_name_plot <- reg_stu[reg_stu$School.Name == "ZPP 69",]
 #storing name of school for plotting, change 'school in RHS to vary the school.
 #Now, need to convert school_name_plot into a long df.
 
-specific_school_mean <- mean_active_students_school %>% filter(School.Name == "ZPP 132")
+specific_school_mean <- mean_active_students_school %>% filter(School.Name == "ZPP 69")
 #specific mean picked from mean_active_students_school to overlay on to total graph.
 
 long_school_name_plot <- school_name_plot %>% 
@@ -154,65 +151,130 @@ long_school_name_plot <- school_name_plot %>%
                values_to = "Active.Students")
 #Convert to long data format.
 
-long_school_name_plot$Month <- factor(long_school_name_plot$Month, levels = c("ASPM.M1","ASPM.M2","ASPM.M3","ASPM.M4","ASPM.M5","ASPM.M6","ASPM.M7","ASPM.M8","ASPM.M9","ASPM.M10","ASPM.M11","ASPM.M12"), ordered = TRUE)
+long_school_name_plot$Month <- factor(long_school_name_plot$Month, levels = paste0("ASPM.M", 1:12), ordered = TRUE)
 # Convert months into ordered factor.
 
 ggplot() +
- geom_line(data=long_school_name_plot, mapping = aes(x = Month, y = Active.Students, group = School.Name, color = School.Name)) +
- geom_point(data=long_school_name_plot, mapping = aes(x = Month, y = Active.Students, group = School.Name, color = School.Name)) +
- geom_label(data = long_school_name_plot, aes(x = Month, y = Active.Students, label = Active.Students)) +
- geom_hline(data = specific_school_mean, aes(yintercept = mean_active_students_school, color = School.Name), linetype = "dashed") +
- geom_label(data = specific_school_mean, aes(
-   x = levels(long_school_name_plot$Month)[length(levels(long_school_name_plot$Month))], 
-   y = mean_active_students_school, 
-   label = paste("Mean:", round(mean_active_students_school, 2)))) +
- labs(x = "Month", y = "Active Students", title = str_glue("Monthly Data for {long_school_name_plot$School.Name}")) +
- geom_line(data = long_active_students_avg, aes(x = Month, y = Active.Students, group = Average.Active.Students, color = Average.Active.Students), linetype = "dotdash") +
- geom_point(data = long_active_students_avg, aes(x = Month, y = Active.Students, group = Average.Active.Students, color = Average.Active.Students)) +
- geom_label(data = long_active_students_avg, aes(x = Month, y = Active.Students, label = paste(round(Active.Students, 2)))) +
- scale_fill_manual(values=c("#CC0000", "#006600", "#669999", "#00CCCC", 
-                            "#660099", "#CC0066", "#FF9999", "#FF9900", 
-                            "black", "black", "black", "black", "black"))
- scale_colour_manual(name = "Yes", values = c("{long_school_name_plot$School.Name}" = "#CC0000", "Mean" = "#669999"))
+  geom_line(data = long_school_name_plot, aes(x = Month, y = Active.Students, group = School.Name, color = School.Name)) +
+  geom_point(data = long_school_name_plot, aes(x = Month, y = Active.Students, group = School.Name, color = School.Name)) +
+  geom_label(data = long_school_name_plot, aes(x = Month, y = Active.Students, label = Active.Students)) +
+  labs(x = "Month", y = "Active Students", title = paste0('ZPP', 145)) +
+  geom_line(data = long_active_students_avg, aes(x = Month, y = Active.Students, group = Average.Active.Students, color = Average.Active.Students), linetype = "dotdash") +
+  geom_point(data = long_active_students_avg, aes(x = Month, y = Active.Students, group = Average.Active.Students, color = Average.Active.Students)) +
+  geom_label(data = long_active_students_avg, aes(x = Month, y = Active.Students, label = paste(round(Active.Students, 2)))) +
+  scale_colour_manual(name = "Legend", values = c("#CC0000", "#006600", "#669999", "#00CCCC", 
+                                                  "#660099", "#CC0066", "#FF9999", "#FF9900", 
+                                                  "black", "black", "black", "black", "black")) +
+  geom_hline(yintercept = specific_school_mean$mean_active_students_school, colour = "#FF9900", linetype = "dashed") +
+  geom_label(aes(
+    x = max(as.numeric(long_school_name_plot$Month)),
+    y = specific_school_mean$mean_active_students_school,
+    label = paste0("Mean:", round(specific_school_mean$mean_active_students_school))
+  ), colour = "#FF9900")
+# Plot for school with school mean across months and mean of school per month.
+  
+  
+ # ------------ Per district Plots ------------
  
  
- 
- # ------------ Per district Plots
- 
- 
- long_district_level_ASPM <- district_level_ASPM[[2]] %>%
+ long_district_level_ASPM <- district_level_ASPM[[3]] %>%
    pivot_longer(cols = starts_with("ASPM.M"), 
                 names_to = "Month", 
                 values_to = "Active.Students")
- # Change the value inside [[]] to the corresponding district number (1 to 15)
+# Change the value inside [[]] to the corresponding district number (1 to 15)
+
+long_district_level_ASPM$Month <- factor(long_district_level_ASPM$Month, levels = paste0("ASPM.M", 1:12), ordered = TRUE)
+
+plot <- ggplot(data = long_district_level_ASPM, aes(x = Month, y = Active.Students, group = School.Name, colour = School.Name)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Month", y = "Active Students", title = str_glue("Monthly Data for {district_level_ASPM[[3]]$District.Name}"))
+  #geom_label(aes(label = Active.Students))
+  #omitting for legibility
+
+## ---------------- NORMALISED COMPARISONS ----------------
+
+reg_stu_with_percent <- reg_stu
+
+for (val in 1:12) {
+  col_name1 <- paste0("M", val)
+  col_name2 <- sym(paste0("ASPM.M", val))
+  
+  reg_stu_with_percent <- reg_stu_with_percent %>%
+    mutate(!!col_name1 := round((!!col_name2 / Total.Number.of.Students.Registered) * 100, 2))
+}
+
+# ----------- Per dist. percentages & calc. -----------
+
+percent_district_level_ASPM <- list()
+
+# Loop through values 1 to 15
+for (val in 1:15) {
+  # Subset the data based on District.Name
+  percent_district_level_ASPM[[paste0("dis_ASPM", val)]] <- data.frame(subset(reg_stu_with_percent, District.Name == paste0("District ", val)))
+}
+
+median_percentages_reg_stu <- reg_stu_with_percent %>% summarise(across(16:27, \(x) median(x, na.rm = TRUE)))
+#Calc. Median percentages of active users.
+
+mean_percentages_reg_stu <- reg_stu_with_percent %>% summarise(across(16:27, \(x) mean(x, na.rm = TRUE)))
+# Mean doesn't make as much sense for directly computing on %data, still can be handy to have it calculated.
+
+long_medians <- median_percentages_reg_stu %>% 
+  pivot_longer(cols = starts_with("M"),
+               names_to = "Month",
+               values_to = "Median.Percentages")
+
+
+# ----------- Per School percentage calc. -----------
+
+percent_school_plot <- reg_stu_with_percent[reg_stu_with_percent$School.Name == "ZPP 145",]
+# storing name of school for plotting, change 'school in RHS to vary the school.
+# Now, need to convert school_name_plot into a long df.
+
+long_percent_school_plot <- percent_school_plot %>% 
+  pivot_longer(cols = starts_with("M"),
+               names_to = "Percent.Month",
+               values_to = "Percent.Active.Students")
+#Convert to long data format.
+
+long_percent_school_plot1 <- percent_school_plot %>% 
+  pivot_longer(cols = starts_with("ASPM.M"),
+               names_to = "Month",
+               values_to = "Active.Students")
+
+percent_data_combined <- cbind(long_percent_school_plot[, c("District.Name", "School.Name", "Total.Number.of.Students.Registered", "Percent.Month", "Percent.Active.Students")], long_percent_school_plot1[, c("Active.Students", "Month")])
+
+rm(long_percent_school_plot)
+rm(long_percent_school_plot1)
+# Freeing up temp variables.
+
+percent_data_combined$Percent.Month <- factor(percent_data_combined$Percent.Month, levels = paste0("M",1:12), ordered = TRUE)
+# Convert months into ordered factor.
+
+ggplot() +
+  geom_line(data = percent_data_combined, aes(x = Percent.Month, y = Percent.Active.Students, group = School.Name, color = School.Name)) +
+  geom_point(data = percent_data_combined, aes(x = Percent.Month, y = Percent.Active.Students, group = School.Name, color = School.Name)) +
+  geom_label(data = percent_data_combined, aes(x = Percent.Month, y = Percent.Active.Students, label = paste0(round(Percent.Active.Students, 1)))) +
+  geom_hline(yintercept = 100, color = "blue", linetype = "dashed") +
+  geom_label(aes(
+    x = max(as.numeric(percent_data_combined$Percent.Month)) - 0.5,
+    y = 100,
+    label = "Max"
+  )) +
+  scale_y_continuous(breaks = seq(0, 150, by = 10)) +
+  geom_line(data=long_medians, aes(x = Month, y = Median.Percentages, group = 1)) +
+  geom_point(data=long_medians, aes(x = Month, y = Median.Percentages, group = 1)) +
+  geom_label(data = long_medians, aes(x = Month, y = Median.Percentages, label = paste0(round(Median.Percentages,1))))
+
+
+
+
  
- long_district_level_ASPM_2$Month <- factor(long_district_level_ASPM_2$Month, levels = paste0("ASPM.M", 1:12), ordered = TRUE)
- 
- ggplot(data = long_district_level_ASPM_2, aes(x = Month, y = Active.Students, group = School.Name, colour = School.Name)) +
-   geom_line() +
-   geom_point() +
-   labs(x = "Month", y = "Active Students", title = str_glue("Monthly Data for {district_level_ASPM[[2]]$District.Name}"))
-   #geom_label(aes(label = Active.Students))
-   #omitting for legibility
-
- ggplot(data = long_reg_stu, aes(x = District.Name, y =))
-
-
-
-
-
-
-
-
-
-#{District 6 is doing something right by getting max signups.}
 
 # TODO:
-#Separate all the districts into their own dfs. DONE
-#Active students per school vs time (average of dist is plotted as a st line.) DONE
-#school with min active students in dist
-#school with max active students in dist
-#school with min/max learning/month in dist [group_by]
+# Work on hours on KA
+# Compare schools as a percentage of participation - highest in district.
 
 
 
