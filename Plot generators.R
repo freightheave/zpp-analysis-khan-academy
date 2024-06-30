@@ -59,7 +59,7 @@ for (val in 1:15) {
     filename = paste0("District Level Percent ASPM", val, ".png"),
     plot = district_plot,
     device = "png",
-    path = "D:/Repositories/zpp-analysis-khan-academy/Plots",
+    path = "PATH/TO/YOUR/FOLDER",
     width = 1366,
     height = 768,
     units = c("px"),
