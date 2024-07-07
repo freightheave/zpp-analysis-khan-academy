@@ -13,7 +13,7 @@ cbbPalette <- c("#CC0000", "#006600", "#669999", "#00CCCC",
 
 # ---------------- Data Reading/Manipulation ----------------
 
-me1 <- read.csv("D:/Repositories/zpp-analysis-khan-academy/M&E Insight Analyst Assignment - Data set.csv")
+me1 <- read.csv("PATH/TO/THE/CSV")
 # replace with <path to the data.csv file> when uploading.
 
 reg_stu <- data.frame(me1[,1:15])
